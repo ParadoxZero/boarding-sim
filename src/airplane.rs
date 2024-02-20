@@ -56,18 +56,7 @@ impl Plane {
                 assert!(Plane::is_valid_pathway(i, person.seat.col));
                 if row as u32 == person.seat.row {
                     // If person reached their seat's row
-                    if person.time_left_to_sit == 0 {
-                        // Person is finished with preparing to sit
-                        assert!(
-                            !self.seats_map.contains(&person.seat),
-                            "The seat is already occupied!"
-                        );
-                        self.seats_map.insert(person.seat);
-                        self.pathways[i as usize][row] = None;
-                    } else {
-                        person.time_left_to_sit -= 1;
-                        self.pathways[i as usize][row] = Some(person);
-                    }
+                    self.try_sit(&mut person, i, row);
                 } else {
                     // If person didn't reach their seat, move ahead
                     assert!(
@@ -83,6 +72,21 @@ impl Plane {
             }
         }
         Ok(())
+    }
+
+    fn try_sit(&mut self, person: &mut Person, path: u32, row: usize) {
+        if person.time_left_to_sit == 0 {
+            // Person is finished with preparing to sit
+            assert!(
+                !self.seats_map.contains(&person.seat),
+                "The seat is already occupied!"
+            );
+            self.seats_map.insert(person.seat);
+            self.pathways[path as usize][row] = None;
+        } else {
+            person.time_left_to_sit -= 1;
+            self.pathways[path as usize][row] = Some(*person);
+        }
     }
 
     pub fn add_passenger_to_line(&mut self, person: Person) -> bool {
