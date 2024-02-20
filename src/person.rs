@@ -17,35 +17,6 @@ pub struct Person {
 
 impl Person {
     const MAX_TIME_PER_PERSON: u32 = 5;
-    pub fn generate_people(
-        max_row: u32,
-        max_col: u32,
-        max_seat: u32,
-        loading_factor: u32,
-    ) -> Vec<Person> {
-        assert!(loading_factor <= 100);
-        let mut seats_map: HashSet<Seat> = HashSet::new();
-        let total_people = max_col * max_row * max_seat * loading_factor / 100;
-        let mut i = 0;
-        while i <= total_people {
-            let seat = Seat {
-                row: random::<u32>() % max_row,
-                col: random::<u32>() % max_col,
-                seat_id: random::<u32>() % max_seat,
-            };
-            if !seats_map.contains(&seat) {
-                seats_map.insert(seat);
-                i += 1;
-            }
-        }
-        seats_map
-            .into_iter()
-            .map(|seat| Person {
-                seat,
-                time_left_to_sit: random::<u32>() % Person::MAX_TIME_PER_PERSON,
-            })
-            .collect()
-    }
 }
 
 #[derive(Clone, Debug, Default, PartialEq, Eq)]

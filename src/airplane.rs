@@ -1,6 +1,6 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::HashSet;
 
-use crate::person::{Person, PersonGenerator, Seat};
+use crate::person::{Person, Seat};
 
 #[derive(Clone, Copy, Debug, Default)]
 pub struct PlaneSize {
@@ -14,7 +14,6 @@ pub struct Plane {
     pub size: PlaneSize,
     seats_map: HashSet<Seat>,
     pathways: Vec<Vec<Option<Person>>>,
-    person_generator: PersonGenerator,
 }
 
 impl PlaneSize {
@@ -33,16 +32,13 @@ impl PlaneSize {
 }
 
 impl Plane {
-    const TIME_TAKEN_BAGGAGE: u32 = 3;
 
-    pub fn new(size: PlaneSize, person_generator: PersonGenerator) -> Plane {
+    pub fn new(size: PlaneSize) -> Plane {
         let pathways = vec![vec![None; size.rows as usize]; size.get_pathways() as usize];
-        println!("Pathways: {:?}", pathways);
         Plane {
             size,
             seats_map: HashSet::new(),
             pathways,
-            person_generator,
         }
     }
 

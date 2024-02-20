@@ -4,12 +4,12 @@ mod person;
 use crate::airplane::{Plane, PlaneSize};
 use clap::Parser;
 
-#[derive(PartialEq, Eq, Clone, Copy)]
-enum Distribution {
-    Random(),
-    OddEven(),
-    Sequential(),
-}
+// #[derive(PartialEq, Eq, Clone, Copy)]
+// enum Distribution {
+//     Random,
+//     OddEven,
+//     Sequential,
+// }
 
 /// Search for a pattern in a file and display the lines that contain it.
 #[derive(Parser)]
@@ -33,11 +33,11 @@ fn main() {
     println!("Starting simulation...");
 
     let size = PlaneSize {cols:args.cols, rows:args.rows, seats_per_cols:args.seats};
-    let mut plane = Plane::new(size, person::PersonGenerator::new(args.rows, args.cols, args.seats, 100));
+    let mut plane = Plane::new(size);
     let mut person_generator = person::PersonGenerator::new(args.rows, args.cols, args.seats, 100);
     let mut total_ticks = 0;
     while let Some(person) =  person_generator.next() {
-        println!("Seat {:?} entering the line.", person.seat);
+        println!("Seat #{},{},{} entered the line.", person.seat.row, person.seat.col, person.seat.seat_id);
         while !plane.add_passenger_to_line(person) {
             plane.tick().expect("Something went wrong!");
             total_ticks += 1;
