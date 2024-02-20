@@ -20,7 +20,7 @@ impl Person {
 }
 
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
-pub struct PersonGenerator {
+pub struct RandomPersonGenerator {
     seat_map: HashSet<Seat>,
     max_row: u32,
     max_col: u32,
@@ -28,9 +28,18 @@ pub struct PersonGenerator {
     loading_factor: u32,
 }
 
-impl PersonGenerator {
-    pub fn new(max_row: u32, max_col: u32, max_seat: u32, loading_factor: u32) -> PersonGenerator {
-        PersonGenerator {
+pub trait PersonGenerator {
+    fn next(&mut self) -> Option<Person>;
+}
+
+impl RandomPersonGenerator {
+    pub fn new(
+        max_row: u32,
+        max_col: u32,
+        max_seat: u32,
+        loading_factor: u32,
+    ) -> RandomPersonGenerator {
+        RandomPersonGenerator {
             seat_map: HashSet::new(),
             max_row,
             max_col,
@@ -38,8 +47,20 @@ impl PersonGenerator {
             loading_factor,
         }
     }
+    fn random_seat(&mut self) -> Seat {
+        Seat {
+            row: random::<u32>() % self.max_row,
+            col: random::<u32>() % self.max_col,
+            seat_id: random::<u32>() % self.max_seat,
+        }
+    }
 
-    pub fn next(&mut self) -> Option<Person> {
+    fn total_allowed_people(&self) -> u32 {
+        self.max_row * self.max_col * self.max_seat * self.loading_factor / 100
+    }
+}
+impl PersonGenerator for RandomPersonGenerator {
+    fn next(&mut self) -> Option<Person> {
         if self.seat_map.len() >= self.total_allowed_people().try_into().unwrap() {
             return None;
         }
@@ -54,17 +75,5 @@ impl PersonGenerator {
             seat,
             time_left_to_sit: random::<u32>() % Person::MAX_TIME_PER_PERSON,
         })
-    }
-
-    fn random_seat(&mut self) -> Seat {
-        Seat {
-            row: random::<u32>() % self.max_row,
-            col: random::<u32>() % self.max_col,
-            seat_id: random::<u32>() % self.max_seat,
-        }
-    }
-
-    fn total_allowed_people(&self) -> u32 {
-        self.max_row * self.max_col * self.max_seat * self.loading_factor / 100
     }
 }

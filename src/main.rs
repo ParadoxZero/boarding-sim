@@ -38,13 +38,17 @@ fn main() {
         seats_per_cols: args.seats,
     };
     let plane = Plane::new(size);
-    let person_generator = person::PersonGenerator::new(args.rows, args.cols, args.seats, 100);
+    let person_generator =
+        person::RandomPersonGenerator::new(args.rows, args.cols, args.seats, 100);
     let total_ticks = run_simulation(person_generator, plane);
 
     println!("Total ticks: {}", total_ticks);
 }
 
-fn run_simulation(mut person_generator: person::PersonGenerator, mut plane: Plane) -> i32 {
+fn run_simulation<Generator: person::PersonGenerator>(
+    mut person_generator: Generator,
+    mut plane: Plane,
+) -> i32 {
     let mut total_ticks = 0;
     while let Some(person) = person_generator.next() {
         println!(
