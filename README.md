@@ -15,3 +15,29 @@ Options:
   -V, --version        Print version
 ```
 
+# Building
+This is a simple rust and cargo based project.
+Run it directly using cargo - 
+
+```
+cargo run -- <cli params>
+```
+
+Example - 
+```
+cargo run -- -r 50
+```
+
+To build release mode - 
+```
+cargo build --release
+```
+
+Binaries will be found in `target/*` folders.
+
+# Todo
+
+* Add sequential strategy
+* Add zone based strategy
+* Add 1 per row line strategy
+* Add visualization
